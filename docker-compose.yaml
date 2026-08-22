@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  postgres_server:
+    image: postgres:15-alpine
+    container_name: marketplace_postgres
+    environment:
+      POSTGRES_USER: db_admin
+      POSTGRES_PASSWORD: secure_password_123
+      POSTGRES_DB: marketplace_main
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_shared_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+volumes:
+  postgres_shared_data:
