@@ -5,3 +5,5 @@ databaseChangeLog:
       changes:
   - include:
       file: db/changelog/changesets/001-create-customer-table.yaml
+  - include:
+      file: db/changelog/changesets/002-create-outbox-table.yaml

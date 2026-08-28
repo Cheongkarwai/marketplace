@@ -2,9 +2,9 @@ spring:
   application:
     name: user-service
   r2dbc:
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
-    url: r2dbc:${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME:db_admin}
+    password: ${DATASOURCE_PASSWORD:secure_password_123}
+    url: r2dbc:${DATASOURCE_URL:postgresql://localhost:5432/users}
   webflux:
     api-version:
       supported:
@@ -15,9 +15,9 @@ spring:
   messages:
     basename: messages/messages
   liquibase:
-    url: jdbc:${DATASOURCE_URL}
-    user: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
+    url: jdbc:${DATASOURCE_URL:postgresql://localhost:5432/users}
+    user: ${DATASOURCE_USERNAME:db_admin}
+    password: ${DATASOURCE_PASSWORD:secure_password_123}
 logging:
   level:
     org.springframework.web.reactive.result.method.annotation.ControllerMethodResolver: TRACE

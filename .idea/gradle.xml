@@ -20,9 +20,27 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/common-core-reactive" name="common-core-reactive">
+                <projects>
+                  <project path="$PROJECT_DIR$/common-core-reactive" />
+                </projects>
+              </build>
+              <build path="$PROJECT_DIR$/common-r2dbc" name="common-r2dbc">
+                <projects>
+                  <project path="$PROJECT_DIR$/common-r2dbc" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$/user-service" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/common-core-reactive" />
+            <option value="$PROJECT_DIR$/common-r2dbc" />
             <option value="$PROJECT_DIR$/user-service" />
           </set>
         </option>

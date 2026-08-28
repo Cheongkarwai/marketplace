@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260828-01
+      author: cheongkarwai
+      changes:
+        - createTable:
+            tableName: outbox
+            columns:
+              - column:
+                  name: id
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: aggregatetype
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: aggregateid
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payload
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: timestamp
+                  type: timestamp
+                  constraints:
+                    nullable: false
