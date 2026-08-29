@@ -42,8 +42,10 @@ public class CustomerService {
     public Mono<CustomerDTO> createCustomer(CustomerCreationDTO customerCreationDTO) {
         return Mono.justOrEmpty(customerCreationDTO)
                 .map(customerMapper::mapToCustomer)
-                .filterWhen(customer -> emailDuplicateFilter.isDuplicate(customer.getContact().getEmailAddress())
-                        .map(isDuplicate-> !isDuplicate))
+                .filterWhen(customer -> {
+                    String email = customer.getContact() != null ? customer.getContact().getEmailAddress() : null;
+                    return checkDuplicateEmail(email).map(isDuplicate -> !isDuplicate);
+                })
                 .flatMap(customerRepository::save)
                 .flatMap(savedCustomer -> {
                     CustomerCreatedEvent event = new CustomerCreatedEvent(
@@ -62,6 +64,27 @@ public class CustomerService {
                             .thenReturn(savedCustomer);
                 })
                 .map(customerMapper::mapToCustomerDTO);
+    }
+
+    private Mono<Boolean> checkDuplicateEmail(String email) {
+        if (email == null) {
+            return Mono.just(false);
+        }
+
+        return emailDuplicateFilter.isDuplicate(email)
+                .flatMap(bloomSaysDuplicate -> {
+                    if (!bloomSaysDuplicate) {
+                        return Mono.just(false);
+                    }
+
+                    log.warn("Bloom filter flagged duplicate for email: {}. Verifying with database...", email);
+                    return customerRepository.existsByContact_EmailAddress(email)
+                            .doOnNext(existsInDb -> {
+                                if (!existsInDb) {
+                                    log.info("False positive detected for email: {}. Allowing registration.", email);
+                                }
+                            });
+                });
     }
 
     private String serializeToJson(Object object) {
