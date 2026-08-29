@@ -4,7 +4,7 @@ import com.cheong.common.r2dbc.outbox.Outbox;
 import com.cheong.userservice.dto.ContactDTO;
 import com.cheong.userservice.dto.CustomerCreationDTO;
 import com.cheong.userservice.dto.CustomerDTO;
-import com.cheong.userservice.event.CustomerCreatedEvent;
+import com.cheong.common.core.reactive.event.CustomerCreatedEvent;
 import com.cheong.userservice.listener.CustomerTopicListener;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

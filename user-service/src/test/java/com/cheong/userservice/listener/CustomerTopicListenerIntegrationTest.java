@@ -1,6 +1,6 @@
 package com.cheong.userservice.listener;
 
-import com.cheong.userservice.event.CustomerCreatedEvent;
+import com.cheong.common.core.reactive.event.CustomerCreatedEvent;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

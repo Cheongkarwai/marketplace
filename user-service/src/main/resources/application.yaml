@@ -10,8 +10,8 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
         spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.json.type.mapping: "CUSTOMER_CREATED:com.cheong.userservice.event.CustomerCreatedEvent"
-        spring.json.trusted.packages: "com.cheong.userservice.event"
+        spring.json.type.mapping: "CUSTOMER_CREATED:com.cheong.common.core.reactive.event.CustomerCreatedEvent"
+        spring.json.trusted.packages: "com.cheong.*"
 
   r2dbc:
     username: ${DATASOURCE_USERNAME:db_admin}
@@ -26,10 +26,24 @@ spring:
       default: v1
   messages:
     basename: messages/messages
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2000ms
+      connect-timeout: 2000ms
   liquibase:
     url: jdbc:${DATASOURCE_URL:postgresql://localhost:5432/users}
     user: ${DATASOURCE_USERNAME:db_admin}
     password: ${DATASOURCE_PASSWORD:secure_password_123}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
 logging:
   level:
     org.springframework.web.reactive.result.method.annotation.ControllerMethodResolver: TRACE

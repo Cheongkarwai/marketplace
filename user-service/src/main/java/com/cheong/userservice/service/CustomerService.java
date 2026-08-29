@@ -1,9 +1,10 @@
 package com.cheong.userservice.service;
 
+import com.cheong.common.core.reactive.event.CustomerCreatedEvent;
 import com.cheong.common.r2dbc.outbox.OutboxService;
 import com.cheong.userservice.dto.CustomerCreationDTO;
 import com.cheong.userservice.dto.CustomerDTO;
-import com.cheong.userservice.event.CustomerCreatedEvent;
+import com.cheong.userservice.filter.EmailDuplicateFilter;
 import com.cheong.userservice.mapper.CustomerMapper;
 import com.cheong.userservice.repository.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -23,26 +24,26 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
     private final OutboxService outboxService;
     private final ObjectMapper objectMapper;
+    private final EmailDuplicateFilter emailDuplicateFilter;
 
     public CustomerService(CustomerRepository customerRepository,
                            CustomerMapper customerMapper,
                            OutboxService outboxService,
-                           ObjectMapper objectMapper) {
+                           ObjectMapper objectMapper,
+                           EmailDuplicateFilter emailDuplicateFilter) {
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
         this.outboxService = outboxService;
         this.objectMapper = objectMapper;
+        this.emailDuplicateFilter = emailDuplicateFilter;
     }
 
     @Transactional
     public Mono<CustomerDTO> createCustomer(CustomerCreationDTO customerCreationDTO) {
         return Mono.justOrEmpty(customerCreationDTO)
                 .map(customerMapper::mapToCustomer)
-                .doOnNext(customer -> {
-                    if (customer.getContact() != null) {
-                        log.info("Customer email address {}", customer.getContact().getEmailAddress());
-                    }
-                })
+                .filterWhen(customer -> emailDuplicateFilter.isDuplicate(customer.getContact().getEmailAddress())
+                        .map(isDuplicate-> !isDuplicate))
                 .flatMap(customerRepository::save)
                 .flatMap(savedCustomer -> {
                     CustomerCreatedEvent event = new CustomerCreatedEvent(

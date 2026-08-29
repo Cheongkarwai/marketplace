@@ -37,6 +37,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:3.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-kafka'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation platform('org.testcontainers:testcontainers-bom:2.0.5')
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
@@ -58,6 +59,8 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.redisson:redisson-spring-boot-starter:4.7.0'
+    implementation 'org.redisson:redisson-spring-data:4.7.0'
 }
 
 tasks.named('test') {

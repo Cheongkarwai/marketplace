@@ -1,6 +1,7 @@
 package com.cheong.userservice.listener;
 
-import com.cheong.userservice.event.CustomerCreatedEvent;
+import com.cheong.common.core.reactive.event.CustomerCreatedEvent;
+import com.cheong.userservice.filter.EmailDuplicateFilter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaHandler;
@@ -24,6 +25,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class CustomerTopicListener {
 
     private final BlockingQueue<CustomerCreatedEvent> receivedEvents = new LinkedBlockingQueue<>();
+    private final EmailDuplicateFilter emailDuplicateFilter;
+
+    public CustomerTopicListener(EmailDuplicateFilter emailDuplicateFilter) {
+        this.emailDuplicateFilter = emailDuplicateFilter;
+    }
 
     @KafkaHandler
     public Mono<Void> handleCustomerCreated(
@@ -35,12 +41,13 @@ public class CustomerTopicListener {
                 key, eventType, event.eventId(), event.customerId(), event.emailAddress());
 
         receivedEvents.offer(event);
-        processCustomerCreated(event);
-        return Mono.empty();
+        return processCustomerCreated(event);
     }
 
-    protected void processCustomerCreated(CustomerCreatedEvent event) {
+    public Mono<Void> processCustomerCreated(CustomerCreatedEvent event) {
         log.info("Processing business logic for created customer: {}", event.customerId());
+        return emailDuplicateFilter.register(event.emailAddress())
+                .then();
     }
 
 

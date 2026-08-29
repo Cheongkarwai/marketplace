@@ -71,6 +71,7 @@ With the **Transactional Outbox Pattern**:
 | `debezium` | Debezium Connect 2.6.2 | `8083` | Kafka Connect worker running Debezium Postgres connector & Outbox SMT |
 | `debezium_init` | Auto-registration container | - | Automatically posts connector configuration upon startup |
 | `kafka_ui` | Provectus Kafka UI | `8085` | Web dashboard for monitoring topics, messages, and connectors |
+| `redis` | Redis 7 Alpine | `6379` | In-memory key-value store and reactive cache |
 
 ---
 

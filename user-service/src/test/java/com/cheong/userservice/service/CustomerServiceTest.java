@@ -41,13 +41,16 @@ class CustomerServiceTest {
     @Mock
     private OutboxService outboxService;
 
+    @Mock
+    private com.cheong.userservice.filter.EmailDuplicateFilter emailDuplicateFilter;
+
     private final ObjectMapper objectMapper = JsonMapper.builder().build();
 
     private CustomerService customerService;
 
     @BeforeEach
     void setUp() {
-        customerService = new CustomerService(customerRepository, customerMapper, outboxService, objectMapper);
+        customerService = new CustomerService(customerRepository, customerMapper, outboxService, objectMapper, emailDuplicateFilter);
     }
 
     @Test
@@ -73,6 +76,7 @@ class CustomerServiceTest {
                 .build();
 
         when(customerMapper.mapToCustomer(creationDTO)).thenReturn(customer);
+        when(emailDuplicateFilter.isDuplicate("john@example.com")).thenReturn(Mono.just(false));
         when(customerRepository.save(customer)).thenReturn(Mono.just(savedCustomer));
         when(outboxService.saveEvent(eq("customer"), eq(customerId), eq("CUSTOMER_CREATED"), any(), any()))
                 .thenReturn(Mono.just(outbox));
